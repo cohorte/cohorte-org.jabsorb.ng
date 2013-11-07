@@ -27,6 +27,12 @@ original project.
 The main incompatibility is the way sets are serialized (array vs. object).
 
 
+Compilation
+***********
+
+Compilation is based on Maven, simply run ``mvn clean install``.
+
+
 License
 *******
 
