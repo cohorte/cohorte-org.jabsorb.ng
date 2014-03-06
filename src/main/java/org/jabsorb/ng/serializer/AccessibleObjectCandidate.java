@@ -27,6 +27,7 @@
 package org.jabsorb.ng.serializer;
 
 import java.lang.reflect.AccessibleObject;
+import java.util.Arrays;
 
 /**
  * Used to determine whether two methods match
@@ -36,17 +37,17 @@ public class AccessibleObjectCandidate {
     /**
      * The method/constructor
      */
-    final private AccessibleObject accessibleObject;
+    private final AccessibleObject accessibleObject;
 
     /**
      * The match data for each parameter of the method.
      */
-    final private ObjectMatch match[];
+    private final ObjectMatch match[];
 
     /**
      * The parameters of the accessibleObject
      */
-    final private Class<?>[] parameterTypes;
+    private final Class<?>[] parameterTypes;
 
     /**
      * Creates a new MethodCandidate
@@ -65,9 +66,11 @@ public class AccessibleObjectCandidate {
             throw new ArrayIndexOutOfBoundsException(
                     "parameter types and matches need to be of the same size");
         }
+
         this.accessibleObject = accessibleObject;
-        this.parameterTypes = parameterTypes;
-        this.match = matches;
+        this.parameterTypes = Arrays.copyOf(parameterTypes,
+                parameterTypes.length);
+        this.match = Arrays.copyOf(matches, matches.length);
     }
 
     /**
