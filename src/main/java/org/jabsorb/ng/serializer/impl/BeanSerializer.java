@@ -52,10 +52,12 @@ import org.json.JSONObject;
  * Serialises java beans that are known to have readable and writable properties
  */
 public class BeanSerializer extends AbstractSerializer {
+
     /**
      * Stores the readable and writable properties for the Bean.
      */
     protected static class BeanData {
+
         // TODO: Legacy comment. WTF?
         // in absence of getters and setters, these fields are
         // public to allow subclasses to access.
@@ -97,13 +99,13 @@ public class BeanSerializer extends AbstractSerializer {
     /**
      * The logger for this class
      */
-    private final static ILogger log = LoggerFactory
+    private static final ILogger log = LoggerFactory
             .getLogger(BeanSerializer.class);
 
     /**
      * Unique serialisation id.
      */
-    private final static long serialVersionUID = 2;
+    private static final long serialVersionUID = 2;
 
     /**
      * Analyses a bean, returning a BeanData with the data extracted from it.

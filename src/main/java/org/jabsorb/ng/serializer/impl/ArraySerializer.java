@@ -44,15 +44,16 @@ import org.json.JSONObject;
  * Responsible for serialising Java arrays
  */
 public class ArraySerializer extends AbstractSerializer {
+
     /**
      * The class that this serialises to
      */
-    private final static Class<?>[] _JSONClasses = new Class<?>[] { JSONArray.class };
+    private static final Class<?>[] _JSONClasses = new Class<?>[] { JSONArray.class };
 
     /**
      * The classes that this can serialise
      */
-    private final static Class<?>[] _serializableClasses = new Class<?>[] {
+    private static final Class<?>[] _serializableClasses = new Class<?>[] {
             int[].class, short[].class, long[].class, float[].class,
             double[].class, boolean[].class, Integer[].class, Short[].class,
             Long[].class, Float[].class, Double[].class, Boolean[].class,
@@ -61,7 +62,7 @@ public class ArraySerializer extends AbstractSerializer {
     /**
      * Unique serialisation id.
      */
-    private final static long serialVersionUID = 2;
+    private static final long serialVersionUID = 2;
 
     @Override
     public boolean canSerialize(final Class<?> clazz, final Class<?> jsonClazz) {

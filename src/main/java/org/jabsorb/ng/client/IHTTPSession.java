@@ -11,6 +11,5 @@ public interface IHTTPSession extends ISession {
     /**
      * @return
      */
-    public URI getURI();
-
+    URI getURI();
 }

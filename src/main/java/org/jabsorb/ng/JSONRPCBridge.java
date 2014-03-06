@@ -117,7 +117,7 @@ public class JSONRPCBridge implements Serializable {
         /**
          * Unique serialisation id.
          */
-        private final static long serialVersionUID = 2;
+        private static final long serialVersionUID = 2;
 
         /**
          * The class the object is of
@@ -193,7 +193,7 @@ public class JSONRPCBridge implements Serializable {
     /**
      * Global bridge (for exporting to all users)
      */
-    private final static JSONRPCBridge globalBridge;
+    private static final JSONRPCBridge globalBridge;
 
     /**
      * A simple transformer that makes no change
@@ -203,7 +203,7 @@ public class JSONRPCBridge implements Serializable {
     /**
      * The logger for this class
      */
-    private final static ILogger log = LoggerFactory
+    private static final ILogger log = LoggerFactory
             .getLogger(JSONRPCBridge.class);
 
     /**
@@ -219,7 +219,7 @@ public class JSONRPCBridge implements Serializable {
     /**
      * Unique serialisation id.
      */
-    private final static long serialVersionUID = 2;
+    private static final long serialVersionUID = 2;
 
     /*
      * We have to ensure that IDENTITY_EXCEPTION_TRANSFORMER will be assigned
@@ -230,7 +230,7 @@ public class JSONRPCBridge implements Serializable {
         IDENTITY_EXCEPTION_TRANSFORMER = new ExceptionTransformer() {
 
             /** Unique serialization id. */
-            private final static long serialVersionUID = 2;
+            private static final long serialVersionUID = 2;
 
             @Override
             public Object transform(final Throwable t) {

@@ -36,6 +36,7 @@ import org.jabsorb.ng.serializer.UnmarshallException;
  * Serializes primitive Java values
  */
 public class PrimitiveSerializer extends AbstractSerializer {
+
     /**
      * Classes that this can serialise to.
      */
@@ -53,7 +54,7 @@ public class PrimitiveSerializer extends AbstractSerializer {
     /**
      * Unique serialisation id.
      */
-    private final static long serialVersionUID = 2;
+    private static final long serialVersionUID = 2;
 
     @Override
     public Class<?>[] getJSONClasses() {

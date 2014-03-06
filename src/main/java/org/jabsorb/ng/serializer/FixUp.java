@@ -29,6 +29,7 @@ import org.json.JSONArray;
  * detected during processing of Java into JSON (aka marshalling.)
  */
 public class FixUp {
+
     /**
      * A List of String|Integer's representing references to locate the place
      * where this fixup entry needs to be created.

@@ -49,6 +49,7 @@ import org.jabsorb.ng.logging.LoggerFactory;
  * Gathers the ClassData information via reflection and internally caches it.
  */
 public class ClassAnalyzer {
+
     /**
      * Classes that have been analysed
      * 
@@ -59,7 +60,7 @@ public class ClassAnalyzer {
     /**
      * The logger for this class
      */
-    private final static ILogger log = LoggerFactory
+    private static final ILogger log = LoggerFactory
             .getLogger(ClassAnalyzer.class);
 
     /**

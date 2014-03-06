@@ -32,6 +32,7 @@ import java.lang.reflect.AccessibleObject;
  * Used to determine whether two methods match
  */
 public class AccessibleObjectCandidate {
+
     /**
      * The method/constructor
      */

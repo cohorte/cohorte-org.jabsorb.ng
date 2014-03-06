@@ -30,6 +30,7 @@ package org.jabsorb.ng.localarg;
  * Data holder for this LocalArgResolver.
  */
 class LocalArgResolverData {
+
     /**
      * The class to be resolved locally
      */

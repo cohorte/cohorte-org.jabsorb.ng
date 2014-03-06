@@ -31,33 +31,36 @@ package org.jabsorb.ng.serializer;
  * objects into Java objects.
  */
 
-public class UnmarshallException extends Exception
-{
-  /**
-   * Unique serialisation id.
-   */
-  private final static long serialVersionUID = 2;
+public class UnmarshallException extends Exception {
 
-  /**
-   * Creates a new UnmarshallException
-   * 
-   * @param msg The string to display
-   */
-  public UnmarshallException(String msg)
-  {
-    super(msg);
-  }
-  
-  /**
-   * Creates a new UnmarshallException.
-   * 
-   * @param msg   the message to be displayed
-   * @param cause the cause.  (A <tt>null</tt> value is permitted, and indicates
-   *              that the cause is nonexistent or unknown.)
-   */
-  public UnmarshallException(String msg, Throwable cause)
-  {
-    super(msg,cause);
-  }
+    /**
+     * Unique serialisation id.
+     */
+    private static final long serialVersionUID = 2;
+
+    /**
+     * Creates a new UnmarshallException
+     * 
+     * @param msg
+     *            The string to display
+     */
+    public UnmarshallException(String msg) {
+
+        super(msg);
+    }
+
+    /**
+     * Creates a new UnmarshallException.
+     * 
+     * @param msg
+     *            the message to be displayed
+     * @param cause
+     *            the cause. (A <tt>null</tt> value is permitted, and indicates
+     *            that the cause is nonexistent or unknown.)
+     */
+    public UnmarshallException(String msg, Throwable cause) {
+
+        super(msg, cause);
+    }
 
 }

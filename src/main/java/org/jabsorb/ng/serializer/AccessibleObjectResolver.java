@@ -52,10 +52,11 @@ import org.json.JSONException;
  * method/constructor.
  */
 public class AccessibleObjectResolver {
+
     /**
      * The logger for this class
      */
-    private final static ILogger log = LoggerFactory
+    private static final ILogger log = LoggerFactory
             .getLogger(AccessibleObjectResolver.class);
 
     /**

@@ -90,13 +90,13 @@ public class JSONSerializer implements Serializable {
     /**
      * The logger for this class
      */
-    private final static ILogger log = LoggerFactory
+    private static final ILogger log = LoggerFactory
             .getLogger(JSONSerializer.class);
 
     /**
      * Unique serialisation id.
      */
-    private final static long serialVersionUID = 2;
+    private static final long serialVersionUID = 2;
 
     /**
      * Class loader to be used when unmarshalling

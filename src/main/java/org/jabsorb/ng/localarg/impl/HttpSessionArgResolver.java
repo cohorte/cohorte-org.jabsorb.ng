@@ -36,16 +36,15 @@ import org.jabsorb.ng.localarg.LocalArgResolver;
  * JSONRPCBridge and will replace an HttpSession argument on a called method
  * with the current session. If no session exists, a session will be created.
  */
-public class HttpSessionArgResolver implements LocalArgResolver
-{
-  public Object resolveArg(Object context) throws LocalArgResolveException
-  {
-    if (!(context instanceof HttpServletRequest))
-    {
-      throw new LocalArgResolveException("invalid context");
-    }
+public class HttpSessionArgResolver implements LocalArgResolver {
 
-    HttpServletRequest request = (HttpServletRequest) context;
-    return request.getSession();
-  }
+    public Object resolveArg(Object context) throws LocalArgResolveException {
+
+        if (!(context instanceof HttpServletRequest)) {
+            throw new LocalArgResolveException("invalid context");
+        }
+
+        HttpServletRequest request = (HttpServletRequest) context;
+        return request.getSession();
+    }
 }

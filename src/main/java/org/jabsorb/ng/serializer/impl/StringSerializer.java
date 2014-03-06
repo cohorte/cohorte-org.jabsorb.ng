@@ -36,6 +36,7 @@ import org.jabsorb.ng.serializer.UnmarshallException;
  * Serialises String values
  */
 public class StringSerializer extends AbstractSerializer {
+
     /**
      * Classes that this can serialise to.
      */
@@ -52,7 +53,7 @@ public class StringSerializer extends AbstractSerializer {
     /**
      * Unique serialisation id.
      */
-    private final static long serialVersionUID = 2;
+    private static final long serialVersionUID = 2;
 
     @Override
     public Class<?>[] getJSONClasses() {

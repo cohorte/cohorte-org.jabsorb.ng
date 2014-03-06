@@ -33,10 +33,11 @@ import java.io.Serializable;
  * associated with.
  */
 public class CallbackData implements Serializable {
+
     /**
      * Generated version id.
      */
-    private final static long serialVersionUID = 2;
+    private static final long serialVersionUID = 2;
 
     /**
      * The object implementing the InvocationCallback Interface

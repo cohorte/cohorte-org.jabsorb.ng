@@ -40,16 +40,17 @@ import org.jabsorb.ng.logging.LoggerFactory;
  * provides an interface to invoke them.
  */
 public class CallbackController implements Serializable {
+
     /**
      * The log used for this class.
      */
-    private final static ILogger log = LoggerFactory
+    private static final ILogger log = LoggerFactory
             .getLogger(CallbackController.class);
 
     /**
      * Generated version id.
      */
-    private final static long serialVersionUID = 3;
+    private static final long serialVersionUID = 3;
 
     /**
      * Holds all callbacks registered with this controller. Type: CallbackData

@@ -50,6 +50,7 @@ import org.jabsorb.ng.serializer.UnmarshallException;
  * Controls registration and lookup of LocalArgResolver classes.
  */
 public class LocalArgController {
+
     /**
      * Key: argClazz (ie Class), Value: HashSet<LocalArgResolverData>
      */
@@ -58,7 +59,7 @@ public class LocalArgController {
     /**
      * The logger for this class
      */
-    private final static ILogger log = LoggerFactory
+    private static final ILogger log = LoggerFactory
             .getLogger(LocalArgController.class);
 
     static {

@@ -30,20 +30,21 @@ package org.jabsorb.ng.localarg;
  * Thrown by LocalArgResolver objects when they are unable to resolve context
  * information into the local argument object.
  */
-public class LocalArgResolveException extends Exception
-{
-  /**
-   * Unique serialisation id.
-   */
-  private final static long serialVersionUID = 2;
+public class LocalArgResolveException extends Exception {
 
-  /**
-   * Creates a new LocalArgResolveException
-   * 
-   * @param msg The message to display
-   */
-  public LocalArgResolveException(String msg)
-  {
-    super(msg);
-  }
+    /**
+     * Unique serialisation id.
+     */
+    private static final long serialVersionUID = 2;
+
+    /**
+     * Creates a new LocalArgResolveException
+     * 
+     * @param msg
+     *            The message to display
+     */
+    public LocalArgResolveException(String msg) {
+
+        super(msg);
+    }
 }

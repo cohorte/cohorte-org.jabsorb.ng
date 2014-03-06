@@ -36,8 +36,11 @@ import org.json.JSONTokener;
  * built-in URLConnectionSession, it allows more control over HTTP transport
  * parameters, for example, proxies and the support for HTTPS.
  * 
- * <p>To use this transport you need to first register it in the
- * TransportRegistry, for example: <p> <code>
+ * <p>
+ * To use this transport you need to first register it in the TransportRegistry,
+ * for example:
+ * <p>
+ * <code>
  * HTTPSession.register(TransportRegistry.i()); </code>
  */
 public class HTTPSession implements IHTTPSession {
@@ -55,7 +58,7 @@ public class HTTPSession implements IHTTPSession {
     /**
      * The logger for this class
      */
-    private final static ILogger log = LoggerFactory
+    private static final ILogger log = LoggerFactory
             .getLogger(HTTPSession.class);
 
     /**

@@ -30,67 +30,69 @@ package org.jabsorb.ng.reflect;
  * A key for identifying a method and the number of arguments to that method
  * uniquely.
  */
-public class AccessibleObjectKey
-{
-  /**
-   * The name of the method
-   */
-  private String methodName;
+public class AccessibleObjectKey {
 
-  /**
-   * The number of arguments passed to the method
-   */
-  private int numArgs;
+    /**
+     * The name of the method
+     */
+    private String methodName;
 
-  /**
-   * Create a MethodKey for a given method name and the number of arguments that
-   * that method takes.
-   * 
-   * @param methodName Method name.
-   * @param numArgs The number of arguments the method takes.
-   */
-  public AccessibleObjectKey(String methodName, int numArgs)
-  {
-    this.methodName = methodName;
-    this.numArgs = numArgs;
-  }
+    /**
+     * The number of arguments passed to the method
+     */
+    private int numArgs;
 
-  public String toString()
-  {
-    return methodName+"("+numArgs+")";
-  }
-  public boolean equals(Object o)
-  {
-    if (!(o instanceof AccessibleObjectKey))
-    {
-      return false;
+    /**
+     * Create a MethodKey for a given method name and the number of arguments
+     * that that method takes.
+     * 
+     * @param methodName
+     *            Method name.
+     * @param numArgs
+     *            The number of arguments the method takes.
+     */
+    public AccessibleObjectKey(String methodName, int numArgs) {
+
+        this.methodName = methodName;
+        this.numArgs = numArgs;
     }
-    return (methodName.equals(((AccessibleObjectKey) o).methodName) && numArgs == ((AccessibleObjectKey) o).numArgs);
-  }
 
-  /**
-   * Get the method name.
-   * 
-   * @return the method name.
-   */
-  public String getMethodName()
-  {
-    return methodName;
-  }
+    public String toString() {
 
-  /**
-   * Get the number of arguments that the method takes.
-   * 
-   * @return the number of arguments that the method takes.
-   */
-  public int getNumArgs()
-  {
-    return numArgs;
-  }
+        return methodName + "(" + numArgs + ")";
+    }
 
-  public int hashCode()
-  {
-    return methodName.hashCode() * numArgs;
-  }
+    public boolean equals(Object o) {
+
+        if (!(o instanceof AccessibleObjectKey)) {
+            return false;
+        }
+        return (methodName.equals(((AccessibleObjectKey) o).methodName) && numArgs == ((AccessibleObjectKey) o).numArgs);
+    }
+
+    /**
+     * Get the method name.
+     * 
+     * @return the method name.
+     */
+    public String getMethodName() {
+
+        return methodName;
+    }
+
+    /**
+     * Get the number of arguments that the method takes.
+     * 
+     * @return the number of arguments that the method takes.
+     */
+    public int getNumArgs() {
+
+        return numArgs;
+    }
+
+    public int hashCode() {
+
+        return methodName.hashCode() * numArgs;
+    }
 
 }

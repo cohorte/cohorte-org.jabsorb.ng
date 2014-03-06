@@ -36,14 +36,13 @@ import org.jabsorb.ng.localarg.LocalArgResolver;
  * JSONRPCBridge and will replace an HttpServletResponse argument on a called
  * method with the current request object.
  */
-public class HttpServletResponseArgResolver implements LocalArgResolver
-{
-  public Object resolveArg(Object context) throws LocalArgResolveException
-  {
-    if (!(context instanceof HttpServletResponse))
-    {
-      throw new LocalArgResolveException("invalid context");
+public class HttpServletResponseArgResolver implements LocalArgResolver {
+
+    public Object resolveArg(Object context) throws LocalArgResolveException {
+
+        if (!(context instanceof HttpServletResponse)) {
+            throw new LocalArgResolveException("invalid context");
+        }
+        return context;
     }
-    return context;
-  }
 }

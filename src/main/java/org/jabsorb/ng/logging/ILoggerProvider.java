@@ -10,6 +10,5 @@ public interface ILoggerProvider {
      * @param aClass
      * @return
      */
-    public ILogger getLogger(Class<?> aClass);
-
+    ILogger getLogger(Class<?> aClass);
 }

@@ -38,6 +38,7 @@ import java.util.Map;
  * detecting circular references and/or duplicates.
  */
 public class SerializerState {
+
     /**
      * Represents the current json location that we are at during processing.
      * Each time we go one layer deeper in processing, the reference is pushed

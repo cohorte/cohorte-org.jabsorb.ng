@@ -7,6 +7,7 @@ import java.net.URI;
  * #registerTransport.
  */
 public interface ISessionFactory {
+
     /**
      * @param uri
      *            URI used to open this session

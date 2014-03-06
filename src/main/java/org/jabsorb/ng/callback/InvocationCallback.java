@@ -37,32 +37,41 @@ import java.lang.reflect.AccessibleObject;
  * any given invocation to fail. This could be used as a simpe security
  * mechanism.
  */
-public interface InvocationCallback extends Serializable
-{
-  /**
-   * Callback before invocation of an RPC method.
-   * 
-   * @param context The transport context (the HttpServletRequest object in the
-   *          case of the HTTP transport).
-   * @param instance The object instance or null if it is a static method.
-   * @param accessibleObject Method/constructor that failed the invocation.
-   * @param arguments The arguments passed to the method
-   * @throws Exception if the invocation doesn't work.
-   */
-  public void preInvoke(Object context, Object instance, AccessibleObject accessibleObject,
-      Object arguments[]) throws Exception;
+public interface InvocationCallback extends Serializable {
 
-  /**
-   * Callback after invocation of an RPC method.
-   * 
-   * @param context The transport context (the HttpServletRequest object in the
-   *          case of the HTTP transport).
-   * @param instance The object instance or null if it is a static method.
-   * @param accessibleObject Method/constructor that failed the invocation.
-   * @param result The returned result from the method
-   * @throws Exception if the invocation doesn't work.
-   */
-  public void postInvoke(Object context, Object instance, AccessibleObject accessibleObject,
-      Object result) throws Exception;
+    /**
+     * Callback after invocation of an RPC method.
+     * 
+     * @param context
+     *            The transport context (the HttpServletRequest object in the
+     *            case of the HTTP transport).
+     * @param instance
+     *            The object instance or null if it is a static method.
+     * @param accessibleObject
+     *            Method/constructor that failed the invocation.
+     * @param result
+     *            The returned result from the method
+     * @throws Exception
+     *             if the invocation doesn't work.
+     */
+    void postInvoke(Object context, Object instance,
+            AccessibleObject accessibleObject, Object result);
 
+    /**
+     * Callback before invocation of an RPC method.
+     * 
+     * @param context
+     *            The transport context (the HttpServletRequest object in the
+     *            case of the HTTP transport).
+     * @param instance
+     *            The object instance or null if it is a static method.
+     * @param accessibleObject
+     *            Method/constructor that failed the invocation.
+     * @param arguments
+     *            The arguments passed to the method
+     * @throws Exception
+     *             if the invocation doesn't work.
+     */
+    void preInvoke(Object context, Object instance,
+            AccessibleObject accessibleObject, Object arguments[]);
 }

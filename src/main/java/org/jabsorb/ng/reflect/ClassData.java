@@ -38,6 +38,7 @@ import java.util.Map;
  * for resolving classes and methods to invoke through json-rpc.
  */
 public class ClassData {
+
     /**
      * The class that this ClassData maps.
      */

@@ -28,6 +28,7 @@ import java.util.List;
  * and duplicates.
  */
 public class ProcessedObject {
+
     /**
      * The processed incoming object. When marshalling, this is the java object
      * that is being marshalled to json, when unmarshalling, this is the json

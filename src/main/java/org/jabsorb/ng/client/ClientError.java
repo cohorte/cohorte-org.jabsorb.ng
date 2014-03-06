@@ -28,6 +28,7 @@ package org.jabsorb.ng.client;
  * InvokationHandler handle it.
  */
 public class ClientError extends RuntimeException {
+
     private static final long serialVersionUID = 1L;
 
     public ClientError(final String message) {

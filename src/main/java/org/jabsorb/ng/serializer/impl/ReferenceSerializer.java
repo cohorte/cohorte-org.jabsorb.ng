@@ -42,6 +42,7 @@ import org.json.JSONObject;
  * callable references.
  */
 public class ReferenceSerializer extends AbstractSerializer {
+
     /**
      * Classes that this can serialise to.
      */
@@ -55,13 +56,13 @@ public class ReferenceSerializer extends AbstractSerializer {
     /**
      * The logger for this class
      */
-    private final static ILogger log = LoggerFactory
+    private static final ILogger log = LoggerFactory
             .getLogger(ReferenceSerializer.class);
 
     /**
      * Unique serialisation id.
      */
-    private final static long serialVersionUID = 2;
+    private static final long serialVersionUID = 2;
 
     /**
      * A reference to the bridge

@@ -37,17 +37,16 @@ import org.jabsorb.ng.localarg.LocalArgResolver;
  * JSONRPCBridge and will replace an JSONRPCBridge argument on a called method
  * with the session specific bridge object.
  */
-public class JSONRPCBridgeServletArgResolver implements LocalArgResolver
-{
-  public Object resolveArg(Object context) throws LocalArgResolveException
-  {
-    if (!(context instanceof HttpServletRequest))
-    {
-      throw new LocalArgResolveException("invalid context");
-    }
+public class JSONRPCBridgeServletArgResolver implements LocalArgResolver {
 
-    HttpServletRequest request = (HttpServletRequest) context;
-    HttpSession session = request.getSession();
-    return session.getAttribute("JSONRPCBridge");
-  }
+    public Object resolveArg(Object context) throws LocalArgResolveException {
+
+        if (!(context instanceof HttpServletRequest)) {
+            throw new LocalArgResolveException("invalid context");
+        }
+
+        HttpServletRequest request = (HttpServletRequest) context;
+        HttpSession session = request.getSession();
+        return session.getAttribute("JSONRPCBridge");
+    }
 }
