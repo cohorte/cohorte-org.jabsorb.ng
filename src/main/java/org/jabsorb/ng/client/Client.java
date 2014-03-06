@@ -36,6 +36,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.jabsorb.ng.JSONRPCBridge;
 import org.jabsorb.ng.JSONRPCResult;
 import org.jabsorb.ng.JSONSerializer;
+import org.jabsorb.ng.logging.ILogger;
+import org.jabsorb.ng.logging.LoggerFactory;
 import org.jabsorb.ng.serializer.FixUp;
 import org.jabsorb.ng.serializer.SerializerState;
 import org.json.JSONArray;
@@ -50,6 +52,11 @@ import org.json.JSONObject;
  * TODO: add a logger
  */
 public class Client implements InvocationHandler {
+
+    /**
+     * The logger for this class
+     */
+    private static final ILogger log = LoggerFactory.getLogger(Client.class);
 
     /** The class loader to use */
     private ClassLoader pClassLoader;
@@ -131,10 +138,8 @@ public class Client implements InvocationHandler {
 
         } catch (final SecurityException ex) {
             // Illegal access
-            System.out
-                    .println(MessageFormat.format(
-                            "Illegal access to a constructor of {0}",
-                            aClass.getName()));
+            log.error("getConstructor", "Illegal access to a constructor of "
+                    + aClass.getName(), ex);
 
         } catch (final NoSuchMethodException ex) {
             // Constructor not found, ignore
@@ -285,28 +290,25 @@ public class Client implements InvocationHandler {
 
         } catch (final ClassNotFoundException ex) {
             // Class not found...
-            System.out.println(MessageFormat.format(
-                    "Exception class not found: {0}", aJavaClass));
+            log.error("makeThrowable", "Exception class not found: "
+                    + aJavaClass);
 
         } catch (final IllegalArgumentException ex) {
             // Invalid message
-            System.err.println("Invalid argument for the exception");
-            ex.printStackTrace();
+            log.error("makeThrowable", "Invalid argument for the exception", ex);
 
         } catch (final InstantiationException ex) {
             // Error instantiating the exception
-            System.err.println("Error instantiating the exception");
-            ex.printStackTrace();
+            log.error("makeThrowable", "Error instantiating the exception", ex);
 
         } catch (final IllegalAccessException ex) {
             // Can't access the class
-            System.err.println("Can't instantiate the exception");
-            ex.printStackTrace();
+            log.error("makeThrowable", "Can't instantiate the exception", ex);
 
         } catch (final InvocationTargetException ex) {
             // Error calling the exception constructor
-            System.err.println("Error calling the exception constructor");
-            ex.printStackTrace();
+            log.error("makeThrowable",
+                    "Error calling the exception constructor", ex);
         }
 
         return null;
