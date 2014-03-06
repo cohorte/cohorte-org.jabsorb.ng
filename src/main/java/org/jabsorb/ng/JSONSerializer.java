@@ -352,7 +352,7 @@ public class JSONSerializer implements Serializable {
             final Class<?> jsoClazz) {
 
         if (log.isDebugEnabled()) {
-            log.info("looking for serializer - java:"
+            log.info("getSerializer", "looking for serializer - java:"
                     + (clazz == null ? "null" : clazz.getName()) + " json:"
                     + (jsoClazz == null ? "null" : jsoClazz.getName()));
         }
@@ -362,7 +362,7 @@ public class JSONSerializer implements Serializable {
             if (s != null && s.canSerialize(clazz, jsoClazz)) {
 
                 if (log.isDebugEnabled()) {
-                    log.info("direct match serializer "
+                    log.info("getSerializer", "direct match serializer "
                             + s.getClass().getName());
                 }
                 return s;
@@ -372,7 +372,7 @@ public class JSONSerializer implements Serializable {
                 s = i.next();
                 if (s.canSerialize(clazz, jsoClazz)) {
                     if (log.isDebugEnabled()) {
-                        log.info("search found serializer "
+                        log.info("getSerializer", "search found serializer "
                                 + s.getClass().getName());
                     }
                     return s;
@@ -446,7 +446,7 @@ public class JSONSerializer implements Serializable {
 
         if (java == null) {
             if (log.isDebugEnabled()) {
-                log.debug("marshall null");
+                log.debug("marshall", "marshall null");
             }
             return JSONObject.NULL;
         }
@@ -497,7 +497,8 @@ public class JSONSerializer implements Serializable {
 
         try {
             if (log.isDebugEnabled()) {
-                log.debug("marshall class " + java.getClass().getName());
+                log.debug("marshall", "marshall class "
+                        + java.getClass().getName());
             }
             final Serializer s = getSerializer(java.getClass(), null);
             if (s != null) {
@@ -605,7 +606,8 @@ public class JSONSerializer implements Serializable {
             }
             if (!serializerSet.contains(s)) {
                 if (log.isDebugEnabled()) {
-                    log.debug("registered serializer " + s.getClass().getName());
+                    log.debug("registerSerializer", "registered serializer "
+                            + s.getClass().getName());
                 }
                 s.setOwner(this);
                 serializerSet.add(s);

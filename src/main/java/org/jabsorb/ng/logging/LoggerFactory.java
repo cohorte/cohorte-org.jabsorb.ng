@@ -12,10 +12,10 @@ public class LoggerFactory {
      * @param aClass
      * @return
      */
-    public static ILogger getLogger(Class<?> aClass) {
+    public static ILogger getLogger(final Class<?> aClass) {
 
         return (hasLoggerProvider()) ? getLoggerProvider().getLogger(aClass)
-                : new LoggerNull();
+                : new LoggerJava(aClass.getName());
     }
 
     /**
@@ -45,8 +45,15 @@ public class LoggerFactory {
     /**
      * @param aLoggerProvider
      */
-    public static void setLoggerProvider(ILoggerProvider aLoggerProvider) {
+    public static void setLoggerProvider(final ILoggerProvider aLoggerProvider) {
 
         sLoggerProvider = aLoggerProvider;
+    }
+
+    /**
+     * Hidden constructor
+     */
+    private LoggerFactory() {
+
     }
 }

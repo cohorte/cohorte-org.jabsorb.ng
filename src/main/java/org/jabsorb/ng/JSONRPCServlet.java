@@ -106,17 +106,6 @@ import org.json.JSONObject;
 public class JSONRPCServlet extends HttpServlet {
 
     /**
-     * Unique serialisation id.
-     */
-    private static final long serialVersionUID = 2;
-
-    /**
-     * The logger for this class
-     */
-    private static final ILogger log = LoggerFactory
-            .getLogger(JSONRPCServlet.class);
-
-    /**
      * The size of the buffer used for reading requests
      */
     private static final int buf_size = 4096;
@@ -155,6 +144,89 @@ public class JSONRPCServlet extends HttpServlet {
      * reason.
      */
     private static int GZIP_THRESHOLD = 200;
+
+    /**
+     * The logger for this class
+     */
+    private static final ILogger log = LoggerFactory
+            .getLogger(JSONRPCServlet.class);
+
+    /**
+     * Unique serialisation id.
+     */
+    private static final long serialVersionUID = 2;
+
+    /**
+     * Can browser accept gzip encoding?
+     * 
+     * @param request
+     *            browser request object.
+     * @return true if gzip encoding accepted.
+     */
+    private boolean acceptsGzip(final HttpServletRequest request) {
+
+        // can browser accept gzip encoding?
+        String ae = request.getHeader("accept-encoding");
+        return ae != null && ae.indexOf("gzip") != -1;
+    }
+
+    /**
+     * Find the JSONRPCBridge from the current session. If it can't be found in
+     * the session, or there is no session, then return the global bridge.
+     * 
+     * @param request
+     *            The message received
+     * @return the JSONRPCBridge to use for this request
+     */
+    protected JSONRPCBridge findBridge(final HttpServletRequest request) {
+
+        // Find the JSONRPCBridge for this session or create one
+        // if it doesn't exist
+        HttpSession session = request.getSession(false);
+        JSONRPCBridge json_bridge = null;
+        if (session != null) {
+            json_bridge = (JSONRPCBridge) session.getAttribute("JSONRPCBridge");
+        }
+        if (json_bridge == null) {
+            // Use the global bridge if we can't find a bridge in the session.
+            json_bridge = JSONRPCBridge.getGlobalBridge();
+            if (log.isDebugEnabled()) {
+                log.debug("findBridge", "Using global bridge.");
+            }
+        }
+        return json_bridge;
+    }
+
+    /**
+     * Gzip something.
+     * 
+     * @param in
+     *            original content
+     * @return size gzipped content
+     */
+    private byte[] gzip(final byte[] in) {
+
+        if (in != null && in.length > 0) {
+            long tstart = System.currentTimeMillis();
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            try {
+                GZIPOutputStream gout = new GZIPOutputStream(bout);
+                gout.write(in);
+                gout.flush();
+                gout.close();
+                if (log.isDebugEnabled()) {
+                    log.debug("gzip",
+                            "gzipping took "
+                                    + (System.currentTimeMillis() - tstart)
+                                    + " msec");
+                }
+                return bout.toByteArray();
+            } catch (IOException io) {
+                log.error("gzip", "io exception gzipping byte array", io);
+            }
+        }
+        return new byte[0];
+    }
 
     /**
      * Called by the container when the servlet is initialized. Check for
@@ -201,7 +273,8 @@ public class JSONRPCServlet extends HttpServlet {
      * @throws ServletException
      *             if something goes wrong during initialization.
      */
-    public void init(ServletConfig config) throws ServletException {
+    @Override
+    public void init(final ServletConfig config) throws ServletException {
 
         super.init(config);
 
@@ -210,21 +283,54 @@ public class JSONRPCServlet extends HttpServlet {
             try {
                 JSONRPCServlet.GZIP_THRESHOLD = Integer.parseInt(gzipThresh);
             } catch (NumberFormatException n) {
-                log.debug("could not parse "
-                        + gzipThresh
-                        + " as an integer... defaulting to -1 (gzip compression off)");
+                log.debug(
+                        "init",
+                        "could not parse "
+                                + gzipThresh
+                                + " as an integer... defaulting to -1 (gzip compression off)");
                 JSONRPCServlet.GZIP_THRESHOLD = -1;
             }
         }
 
-        log.debug("GZIP_THRESHOLD is " + JSONRPCServlet.GZIP_THRESHOLD);
+        log.debug("init", "GZIP_THRESHOLD is " + JSONRPCServlet.GZIP_THRESHOLD);
 
         if (JSONRPCServlet.GZIP_THRESHOLD == -1) {
-            log.debug("Gzipping is turned OFF.  No attempts will be made to gzip content from this servlet.");
+            log.debug(
+                    "init",
+                    "Gzipping is turned OFF.  No attempts will be made to gzip content from this servlet.");
         } else if (JSONRPCServlet.GZIP_THRESHOLD == 0) {
-            log.debug("All responses will be Gzipped when gzipping results in a smaller response size.");
+            log.debug(
+                    "init",
+                    "All responses will be Gzipped when gzipping results in a smaller response size.");
         } else {
-            log.debug("Responses over this size will be Gzipped when gzipping results in a smaller response size.");
+            log.debug(
+                    "init",
+                    "Responses over this size will be Gzipped when gzipping results in a smaller response size.");
+        }
+    }
+
+    /**
+     * Format (pretty print) json nicely for debugging output. If the pretty
+     * printing fails for any reason (this is not expected) then the original,
+     * unformatted json will be returned.
+     * 
+     * @param unformattedJSON
+     *            a json string.
+     * 
+     * @return a String containing the formatted json text for the passed in
+     *         json object.
+     */
+    private String prettyPrintJson(final String unformattedJSON) {
+
+        if (unformattedJSON == null || "".equals(unformattedJSON)) {
+            return unformattedJSON;
+        }
+        try {
+            // sort the keys in the output as well
+            return new JSONObject(unformattedJSON).toString(2);
+        } catch (JSONException je) {
+            return unformattedJSON; // fall back to unformatted json, if pretty
+                                    // print fails...
         }
     }
 
@@ -241,8 +347,9 @@ public class JSONRPCServlet extends HttpServlet {
      * @throws IOException
      *             if an IOException occurs during processing.
      */
-    public void service(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+    @Override
+    public void service(final HttpServletRequest request,
+            final HttpServletResponse response) throws IOException {
 
         // Use protected method in case someone wants to override it
         JSONRPCBridge json_bridge = findBridge(request);
@@ -284,12 +391,12 @@ public class JSONRPCServlet extends HttpServlet {
             // request is retried by the container
             request.setAttribute("_jabsorb_beenHere", receiveString);
         } else {
-            log.debug("jetty continuation resumed...");
+            log.debug("service", "jetty continuation resumed...");
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("receive: " + receiveString);
-            log.debug("receive: " + prettyPrintJson(receiveString));
+            log.debug("service", "receive: " + receiveString);
+            log.debug("service", "receive: " + prettyPrintJson(receiveString));
         }
 
         // Process the request
@@ -300,7 +407,7 @@ public class JSONRPCServlet extends HttpServlet {
             json_res = json_bridge.call(new Object[] { request, response },
                     json_req);
         } catch (JSONException e) {
-            log.error("can't parse call" + receiveString, e);
+            log.error("service", "can't parse call" + receiveString, e);
             json_res = new JSONRPCResult(JSONRPCResult.CODE_ERR_PARSE, null,
                     JSONRPCResult.MSG_ERR_PARSE);
         }
@@ -309,8 +416,8 @@ public class JSONRPCServlet extends HttpServlet {
 
         // dump the received string
         if (log.isDebugEnabled()) {
-            log.debug("send: " + sendString);
-            log.debug("send: " + prettyPrintJson(sendString));
+            log.debug("service", "send: " + sendString);
+            log.debug("service", "send: " + prettyPrintJson(sendString));
         }
 
         // Write the response
@@ -326,29 +433,35 @@ public class JSONRPCServlet extends HttpServlet {
             if (acceptsGzip(request)) {
                 if (bout.length > JSONRPCServlet.GZIP_THRESHOLD) {
                     byte[] gzippedOut = gzip(bout);
-                    log.debug("gzipping! original size =  " + bout.length
-                            + "  gzipped size = " + gzippedOut.length);
+                    log.debug("service", "gzipping! original size =  "
+                            + bout.length + "  gzipped size = "
+                            + gzippedOut.length);
 
                     // if gzip didn't actually help, abort
                     if (bout.length <= gzippedOut.length) {
-                        log.warn("gzipping resulted in a larger output size!  "
-                                + "aborting (sending non-gzipped response)... "
-                                + "you may want to increase the gzip threshold if this happens a lot!"
-                                + " original size = " + bout.length
-                                + "  gzipped size = " + gzippedOut.length);
+                        log.warning(
+                                "service",
+                                "gzipping resulted in a larger output size!  "
+                                        + "aborting (sending non-gzipped response)... "
+                                        + "you may want to increase the gzip threshold if this happens a lot!"
+                                        + " original size = " + bout.length
+                                        + "  gzipped size = "
+                                        + gzippedOut.length);
                     } else {
                         // go with the gzipped output
                         bout = gzippedOut;
                         response.addHeader("Content-Encoding", "gzip");
                     }
                 } else {
-                    log.debug("not gzipping because size is " + bout.length
+                    log.debug("service", "not gzipping because size is "
+                            + bout.length
                             + " (less than the GZIP_THRESHOLD of "
                             + JSONRPCServlet.GZIP_THRESHOLD + " bytes)");
                 }
             } else {
                 // this should be rare with modern user agents
-                log.debug("not gzipping because user agent doesn't accept gzip encoding...");
+                log.debug("service",
+                        "not gzipping because user agent doesn't accept gzip encoding...");
             }
         }
 
@@ -365,100 +478,5 @@ public class JSONRPCServlet extends HttpServlet {
         out.write(bout);
         out.flush();
         out.close();
-    }
-
-    /**
-     * Find the JSONRPCBridge from the current session. If it can't be found in
-     * the session, or there is no session, then return the global bridge.
-     * 
-     * @param request
-     *            The message received
-     * @return the JSONRPCBridge to use for this request
-     */
-    protected JSONRPCBridge findBridge(HttpServletRequest request) {
-
-        // Find the JSONRPCBridge for this session or create one
-        // if it doesn't exist
-        HttpSession session = request.getSession(false);
-        JSONRPCBridge json_bridge = null;
-        if (session != null) {
-            json_bridge = (JSONRPCBridge) session.getAttribute("JSONRPCBridge");
-        }
-        if (json_bridge == null) {
-            // Use the global bridge if we can't find a bridge in the session.
-            json_bridge = JSONRPCBridge.getGlobalBridge();
-            if (log.isDebugEnabled()) {
-                log.debug("Using global bridge.");
-            }
-        }
-        return json_bridge;
-    }
-
-    /**
-     * Format (pretty print) json nicely for debugging output. If the pretty
-     * printing fails for any reason (this is not expected) then the original,
-     * unformatted json will be returned.
-     * 
-     * @param unformattedJSON
-     *            a json string.
-     * 
-     * @return a String containing the formatted json text for the passed in
-     *         json object.
-     */
-    private String prettyPrintJson(String unformattedJSON) {
-
-        if (unformattedJSON == null || "".equals(unformattedJSON)) {
-            return unformattedJSON;
-        }
-        try {
-            // sort the keys in the output as well
-            return new JSONObject(unformattedJSON).toString(2);
-        } catch (JSONException je) {
-            return unformattedJSON; // fall back to unformatted json, if pretty
-                                    // print fails...
-        }
-    }
-
-    /**
-     * Can browser accept gzip encoding?
-     * 
-     * @param request
-     *            browser request object.
-     * @return true if gzip encoding accepted.
-     */
-    private boolean acceptsGzip(HttpServletRequest request) {
-
-        // can browser accept gzip encoding?
-        String ae = request.getHeader("accept-encoding");
-        return ae != null && ae.indexOf("gzip") != -1;
-    }
-
-    /**
-     * Gzip something.
-     * 
-     * @param in
-     *            original content
-     * @return size gzipped content
-     */
-    private byte[] gzip(byte[] in) {
-
-        if (in != null && in.length > 0) {
-            long tstart = System.currentTimeMillis();
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            try {
-                GZIPOutputStream gout = new GZIPOutputStream(bout);
-                gout.write(in);
-                gout.flush();
-                gout.close();
-                if (log.isDebugEnabled()) {
-                    log.debug("gzipping took "
-                            + (System.currentTimeMillis() - tstart) + " msec");
-                }
-                return bout.toByteArray();
-            } catch (IOException io) {
-                log.error("io exception gzipping byte array", io);
-            }
-        }
-        return new byte[0];
     }
 }

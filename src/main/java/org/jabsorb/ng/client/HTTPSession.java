@@ -66,7 +66,7 @@ public class HTTPSession implements IHTTPSession {
      * 
      * Called by the initialisation of the TransportRegistry singleton.
      */
-    static void register(TransportRegistry registry) {
+    static void register(final TransportRegistry registry) {
 
         registry.registerTransport("http", new HTTPSessionFactory());
     }
@@ -76,7 +76,7 @@ public class HTTPSession implements IHTTPSession {
     /**
      * @param uri
      */
-    protected HTTPSession(URI uri) {
+    protected HTTPSession(final URI uri) {
 
         super();
 
@@ -85,7 +85,6 @@ public class HTTPSession implements IHTTPSession {
         if (log.isDebugEnabled()) {
             log.debug("<init>", "instanciated");
         }
-
     }
 
     /*
@@ -134,7 +133,7 @@ public class HTTPSession implements IHTTPSession {
      * @see org.jabsorb.client.Session#sendAndReceive(org.json.JSONObject)
      */
     @Override
-    public JSONObject sendAndReceive(JSONObject message) {
+    public JSONObject sendAndReceive(final JSONObject message) {
 
         try {
 

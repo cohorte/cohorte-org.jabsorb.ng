@@ -233,13 +233,13 @@ public class AccessibleObjectResolver {
 
             if (log.isDebugEnabled()) {
                 if (!isConstructor) {
-                    log.debug("invoking "
+                    log.debug("invokeAccessibleObject", "invoking "
                             + ((Method) accessibleObject).getReturnType()
                                     .getName() + " "
                             + ((Method) accessibleObject).getName() + "("
                             + argSignature(accessibleObject) + ")");
                 } else {
-                    log.debug("invoking "
+                    log.debug("invokeAccessibleObject", "invoking "
                             + ((Constructor<?>) accessibleObject).getName()
                             + " " + "(" + argSignature(accessibleObject) + ")");
                 }
@@ -396,8 +396,8 @@ public class AccessibleObjectResolver {
 
             final List<AccessibleObjectCandidate> candidate = new ArrayList<AccessibleObjectCandidate>();
             if (log.isDebugEnabled()) {
-                log.debug("looking for method " + methodName + "("
-                        + argSignature(arguments) + ")");
+                log.debug("resolveMethod", "looking for method " + methodName
+                        + "(" + argSignature(arguments) + ")");
             }
             for (int i = 0; i < accessibleObjects.size(); i++) {
                 final AccessibleObject accessibleObject = accessibleObjects
@@ -415,14 +415,16 @@ public class AccessibleObjectResolver {
                     candidate.add(tryUnmarshallArgs(accessibleObject,
                             arguments, parameterTypes, serializer));
                     if (log.isDebugEnabled()) {
-                        log.debug("+++ possible match with method "
-                                + methodName + "("
-                                + argSignature(accessibleObject) + ")");
+                        log.debug("resolveMethod",
+                                "+++ possible match with method " + methodName
+                                        + "(" + argSignature(accessibleObject)
+                                        + ")");
                     }
                 } catch (final Exception e) {
                     if (log.isDebugEnabled()) {
-                        log.debug("xxx " + e.getMessage() + " in " + methodName
-                                + "(" + argSignature(accessibleObject) + ")");
+                        log.debug("resolveMethod", "xxx " + e.getMessage()
+                                + " in " + methodName + "("
+                                + argSignature(accessibleObject) + ")");
                     }
                 }
             }
@@ -446,8 +448,8 @@ public class AccessibleObjectResolver {
             if (best != null) {
                 final AccessibleObject ao = best.getAccessibleObject();
                 if (log.isDebugEnabled()) {
-                    log.debug("found method " + methodName + "("
-                            + argSignature(ao) + ")");
+                    log.debug("resolveMethod", "found method " + methodName
+                            + "(" + argSignature(ao) + ")");
                 }
                 return ao;
             }

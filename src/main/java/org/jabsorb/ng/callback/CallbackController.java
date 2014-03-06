@@ -55,7 +55,7 @@ public class CallbackController implements Serializable {
     /**
      * Holds all callbacks registered with this controller. Type: CallbackData
      */
-    private Set<CallbackData> callbackSet;
+    private final Set<CallbackData> callbackSet;
 
     /**
      * Default constructor.
@@ -180,7 +180,8 @@ public class CallbackController implements Serializable {
             callbackSet.add(new CallbackData(callback, contextInterface));
         }
         if (log.isDebugEnabled()) {
-            log.debug("registered callback " + callback.getClass().getName()
+            log.debug("registerCallback", "registered callback "
+                    + callback.getClass().getName()
                     + " with context interface " + contextInterface.getName());
         }
     }
@@ -200,9 +201,9 @@ public class CallbackController implements Serializable {
             callbackSet.remove(new CallbackData(callback, contextInterface));
         }
         if (log.isDebugEnabled()) {
-            log.debug("unregistered callback " + callback.getClass().getName()
-                    + " with context " + contextInterface.getName());
+            log.debug("unregisterCallback", "unregistered callback "
+                    + callback.getClass().getName() + " with context "
+                    + contextInterface.getName());
         }
     }
-
 }

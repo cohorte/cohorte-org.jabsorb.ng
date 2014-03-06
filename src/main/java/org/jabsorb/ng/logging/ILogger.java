@@ -7,16 +7,26 @@ package org.jabsorb.ng.logging;
 public interface ILogger {
 
     /**
-     * @param aWhat
-     * @param aInfos
+     * 
+     * @param aMethod
+     * @param aMessage
      */
-    void debug(String aWhat, Object... aInfos);
+    void debug(String aMethod, String aMessage);
 
     /**
-     * @param aWhat
-     * @param aInfos
+     * 
+     * @param aMethod
+     * @param aMessage
      */
-    void error(String aWhat, Object... aInfos);
+    void error(String aMethod, String aMessage);
+
+    /**
+     * 
+     * @param aMethod
+     * @param aMessage
+     * @param aThrowable
+     */
+    void error(String aMethod, String aMessage, Throwable aThrowable);
 
     /**
      * @return
@@ -24,45 +34,31 @@ public interface ILogger {
     String getName();
 
     /**
-     * @param aWhat
-     * @param aInfos
+     * 
+     * @param aMethod
+     * @param aMessage
      */
-    void info(String aWhat, Object... aInfos);
+    void info(String aMethod, String aMessage);
 
     /**
-     * @return
+     * Checks if the debug logging is enabled
+     * 
+     * @return True if the debug logging is enabled
      */
     boolean isDebugEnabled();
 
     /**
-     * @return
+     * 
+     * @param aMethod
+     * @param aMessage
      */
-    boolean isErrorEnabled();
+    void warning(String aMethod, String aMessage);
 
     /**
-     * @return
+     * 
+     * @param aMethod
+     * @param aMessage
+     * @param aThrowable
      */
-    boolean isInfoEnabled();
-
-    /**
-     * @return
-     */
-    boolean isTraceEnabled();
-
-    /**
-     * @return
-     */
-    boolean isWarnEnabled();
-
-    /**
-     * @param aWhat
-     * @param aInfos
-     */
-    void trace(String aWhat, Object... aInfos);
-
-    /**
-     * @param aWhat
-     * @param aInfos
-     */
-    void warn(String aWhat, Object... aInfos);
+    void warning(String aMethod, String aMessage, Throwable aThrowable);
 }

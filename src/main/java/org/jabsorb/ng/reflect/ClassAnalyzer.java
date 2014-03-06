@@ -51,7 +51,7 @@ import org.jabsorb.ng.logging.LoggerFactory;
 public class ClassAnalyzer {
 
     /**
-     * Classes that have been analysed
+     * Classes that have been analyzed
      * 
      * key: Clazz, val ClassData
      */
@@ -75,7 +75,7 @@ public class ClassAnalyzer {
      */
     private static ClassData analyzeClass(final Class<?> clazz) {
 
-        log.info("analyzing " + clazz.getName());
+        log.info("analyzeClass", "analyzing " + clazz.getName());
         final List<Constructor<?>> constructors = new ArrayList<Constructor<?>>(
                 Arrays.asList(clazz.getConstructors()));
         final List<Method> memberMethods = new ArrayList<Method>();

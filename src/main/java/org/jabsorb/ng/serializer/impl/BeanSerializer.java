@@ -119,7 +119,7 @@ public class BeanSerializer extends AbstractSerializer {
     public static BeanData analyzeBean(final Class<? extends Object> clazz)
             throws IntrospectionException {
 
-        log.info("analyzing " + clazz.getName());
+        log.info("analyzeBean", "analyzing " + clazz.getName());
         final BeanData bd = new BeanData();
         bd.beanInfo = Introspector.getBeanInfo(clazz, Object.class);
         final PropertyDescriptor props[] = bd.beanInfo.getPropertyDescriptors();
@@ -212,7 +212,7 @@ public class BeanSerializer extends AbstractSerializer {
             final String prop = ent.getKey();
             final Method getMethod = ent.getValue();
             if (log.isDebugEnabled()) {
-                log.debug("invoking " + getMethod.getName() + "()");
+                log.debug("marshall", "invoking " + getMethod.getName() + "()");
             }
             try {
                 result = getMethod.invoke(o, args);
@@ -250,6 +250,7 @@ public class BeanSerializer extends AbstractSerializer {
         return val;
     }
 
+    @Override
     public ObjectMatch tryUnmarshall(final SerializerState state,
             final Class<?> clazz, final Object o) throws UnmarshallException {
 
@@ -321,6 +322,7 @@ public class BeanSerializer extends AbstractSerializer {
         return returnValue;
     }
 
+    @Override
     public Object unmarshall(final SerializerState state, final Class<?> clazz,
             final Object o) throws UnmarshallException {
 
@@ -332,7 +334,7 @@ public class BeanSerializer extends AbstractSerializer {
             throw new UnmarshallException(clazz.getName() + " is not a bean", e);
         }
         if (log.isDebugEnabled()) {
-            log.debug("instantiating " + clazz.getName());
+            log.debug("unmarshall", "instantiating " + clazz.getName());
         }
         Object instance;
         try {
@@ -370,8 +372,8 @@ public class BeanSerializer extends AbstractSerializer {
                                     + "\" of bean " + clazz.getName(), e);
                 }
                 if (log.isDebugEnabled()) {
-                    log.debug("invoking " + setMethod.getName() + "("
-                            + fieldVal + ")");
+                    log.debug("unmarshall", "invoking " + setMethod.getName()
+                            + "(" + fieldVal + ")");
                 }
                 invokeArgs[0] = fieldVal;
                 try {

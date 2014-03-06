@@ -125,10 +125,11 @@ public class LocalArgController {
                     contextInterface));
             ClassAnalyzer.invalidateCache();
         }
-        log.info("registered local arg resolver "
-                + argResolver.getClass().getName() + " for local class "
-                + argClazz.getName() + " with context "
-                + contextInterface.getName());
+        log.info("registerLocalArgResolver",
+                "registered local arg resolver "
+                        + argResolver.getClass().getName()
+                        + " for local class " + argClazz.getName()
+                        + " with context " + contextInterface.getName());
     }
 
     /**
@@ -189,11 +190,13 @@ public class LocalArgController {
             if (resolverSet == null
                     || !resolverSet.remove(new LocalArgResolverData(
                             argResolver, argClazz, contextInterface))) {
-                log.warn("local arg resolver "
-                        + argResolver.getClass().getName()
-                        + " not registered for local class "
-                        + argClazz.getName() + " with context "
-                        + contextInterface.getName());
+                log.warning(
+                        "unregisterLocalArgResolver",
+                        "local arg resolver "
+                                + argResolver.getClass().getName()
+                                + " not registered for local class "
+                                + argClazz.getName() + " with context "
+                                + contextInterface.getName());
                 return;
             }
             if (resolverSet.isEmpty()) {
@@ -201,9 +204,10 @@ public class LocalArgController {
             }
             ClassAnalyzer.invalidateCache();
         }
-        log.info("unregistered local arg resolver "
-                + argResolver.getClass().getName() + " for local class "
-                + argClazz.getName() + " with context "
-                + contextInterface.getName());
+        log.info("unregisterLocalArgResolver",
+                "unregistered local arg resolver "
+                        + argResolver.getClass().getName()
+                        + " for local class " + argClazz.getName()
+                        + " with context " + contextInterface.getName());
     }
 }

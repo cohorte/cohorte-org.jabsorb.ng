@@ -477,7 +477,7 @@ public class JSONRPCBridge implements Serializable {
             }
             return arr;
         } catch (final Exception e) {
-            log.error("unexpected exception", e);
+            log.error("traverse", "unexpected exception", e);
             throw new JSONException("unexpected exception");
         }
     }
@@ -696,17 +696,18 @@ public class JSONRPCBridge implements Serializable {
             }
 
         } catch (final JSONException e) {
-            log.error("no method or parameters in request");
+            log.error("call", "no method or parameters in request");
             return new JSONRPCResult(JSONRPCResult.CODE_ERR_NOMETHOD, null,
                     JSONRPCResult.MSG_ERR_NOMETHOD);
         }
         if (log.isDebugEnabled()) {
             if (fixups != null) {
-                log.debug("call " + encodedMethod + "(" + arguments + ")"
-                        + ", requestId=" + requestId);
+                log.debug("call", "call " + encodedMethod + "(" + arguments
+                        + ")" + ", requestId=" + requestId);
             } else {
-                log.debug("call " + encodedMethod + "(" + arguments + ")"
-                        + ", fixups=" + fixups + ", requestId=" + requestId);
+                log.debug("call", "call " + encodedMethod + "(" + arguments
+                        + ")" + ", fixups=" + fixups + ", requestId="
+                        + requestId);
             }
         }
 
@@ -726,7 +727,7 @@ public class JSONRPCBridge implements Serializable {
                     applyFixup(arguments, fixup, original);
                 }
             } catch (final JSONException e) {
-                log.error("error applying fixups", e);
+                log.error("call", "error applying fixups", e);
 
                 return new JSONRPCResult(JSONRPCResult.CODE_ERR_FIXUP,
                         requestId, JSONRPCResult.MSG_ERR_FIXUP + ": "
@@ -815,7 +816,7 @@ public class JSONRPCBridge implements Serializable {
         if (!referencesEnabled) {
             registerSerializer(referenceSerializer);
             referencesEnabled = true;
-            log.info("enabled references on this bridge");
+            log.info("enableReferences", "enabled references on this bridge");
         }
     }
 
@@ -1075,7 +1076,8 @@ public class JSONRPCBridge implements Serializable {
             callableReferenceSet.add(clazz);
         }
         if (log.isDebugEnabled()) {
-            log.debug("registered callable reference " + clazz.getName());
+            log.debug("registerCallableReference",
+                    "registered callable reference " + clazz.getName());
         }
     }
 
@@ -1130,7 +1132,8 @@ public class JSONRPCBridge implements Serializable {
             }
         }
         if (log.isDebugEnabled()) {
-            log.debug("registered class " + clazz.getName() + " as " + name);
+            log.debug("registerClass", "registered class " + clazz.getName()
+                    + " as " + name);
         }
     }
 
@@ -1158,8 +1161,8 @@ public class JSONRPCBridge implements Serializable {
             objectMap.put(key, oi);
         }
         if (log.isDebugEnabled()) {
-            log.debug("registered object " + o.hashCode() + " of class "
-                    + o.getClass().getName() + " as " + key);
+            log.debug("registerObject", "registered object " + o.hashCode()
+                    + " of class " + o.getClass().getName() + " as " + key);
         }
     }
 
@@ -1191,8 +1194,8 @@ public class JSONRPCBridge implements Serializable {
             objectMap.put(key, oi);
         }
         if (log.isDebugEnabled()) {
-            log.debug("registered object " + o.hashCode() + " of class "
-                    + interfaceClass.getName() + " as " + key);
+            log.debug("registerObject", "registered object " + o.hashCode()
+                    + " of class " + interfaceClass.getName() + " as " + key);
         }
     }
 
@@ -1237,7 +1240,8 @@ public class JSONRPCBridge implements Serializable {
             referenceSet.add(clazz);
         }
         if (log.isDebugEnabled()) {
-            log.debug("registered reference " + clazz.getName());
+            log.debug("registerReference",
+                    "registered reference " + clazz.getName());
         }
     }
 
@@ -1279,8 +1283,8 @@ public class JSONRPCBridge implements Serializable {
 
         if (cd != null) {
             if (log.isDebugEnabled()) {
-                log.debug("found class " + cd.getClazz().getName() + " named "
-                        + className);
+                log.debug("resolveClass", "found class "
+                        + cd.getClazz().getName() + " named " + className);
             }
             return cd;
         }
@@ -1313,9 +1317,9 @@ public class JSONRPCBridge implements Serializable {
             oi = objectMap.get(key);
         }
         if (log.isDebugEnabled() && oi != null) {
-            log.debug("found object " + oi.getObject().hashCode()
-                    + " of class " + oi.getClazz().getName() + " with key "
-                    + key);
+            log.debug("resolveObject", "found object "
+                    + oi.getObject().hashCode() + " of class "
+                    + oi.getClazz().getName() + " with key " + key);
         }
         if (oi == null && this != globalBridge) {
             return globalBridge.resolveObject(key);
@@ -1404,8 +1408,9 @@ public class JSONRPCBridge implements Serializable {
             if (clazz != null) {
                 classMap.remove(name);
                 if (log.isDebugEnabled()) {
-                    log.debug("unregistered class " + clazz.getName()
-                            + " from " + name);
+                    log.debug("unregisterClass",
+                            "unregistered class " + clazz.getName() + " from "
+                                    + name);
                 }
             }
         }
@@ -1427,7 +1432,7 @@ public class JSONRPCBridge implements Serializable {
             if (oi.getObject() != null) {
                 objectMap.remove(key);
                 if (log.isDebugEnabled()) {
-                    log.debug("unregistered object "
+                    log.debug("unregisterClass", "unregistered object "
                             + oi.getObject().hashCode() + " of class "
                             + oi.getClazz().getName() + " from " + key);
                 }

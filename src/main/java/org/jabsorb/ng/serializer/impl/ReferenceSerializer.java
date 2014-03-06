@@ -67,7 +67,7 @@ public class ReferenceSerializer extends AbstractSerializer {
     /**
      * A reference to the bridge
      */
-    private JSONRPCBridge bridge;
+    private final JSONRPCBridge bridge;
 
     /**
      * Creates a new ReferenceSerializer
@@ -113,8 +113,8 @@ public class ReferenceSerializer extends AbstractSerializer {
         final Integer identity = new Integer(System.identityHashCode(o));
         if (bridge.isReference(clazz)) {
             if (log.isDebugEnabled()) {
-                log.debug("marshalling reference to object " + identity
-                        + " of class " + clazz.getName());
+                log.debug("marshall", "marshalling reference to object "
+                        + identity + " of class " + clazz.getName());
             }
             bridge.addReference(o);
             final JSONObject jso = new JSONObject();
@@ -128,8 +128,9 @@ public class ReferenceSerializer extends AbstractSerializer {
             return jso;
         } else if (bridge.isCallableReference(clazz)) {
             if (log.isDebugEnabled()) {
-                log.debug("marshalling callable reference to object "
-                        + identity + " of class " + clazz.getName());
+                log.debug("marshall",
+                        "marshalling callable reference to object " + identity
+                                + " of class " + clazz.getName());
             }
             bridge.registerObject(identity, o);
             bridge.addReference(o);
