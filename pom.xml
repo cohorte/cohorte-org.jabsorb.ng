@@ -9,6 +9,7 @@
 	<packaging>bundle</packaging>
 
 	<properties>
+		<pkg-version>1.0.0</pkg-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
@@ -60,13 +61,13 @@
 						<Bundle-Activator>org.jabsorb.ng.osgi.Activator</Bundle-Activator>
 
 						<Export-Package>
-							org.jabsorb.ng,
-							org.jabsorb.ng.callback,
-							org.jabsorb.ng.client,
-							org.jabsorb.ng.localarg,
-							org.jabsorb.ng.logging,
-							org.jabsorb.ng.reflect,
-							org.jabsorb.ng.serializer,
+							org.jabsorb.ng;version=${pkg-version},
+							org.jabsorb.ng.callback;version=${pkg-version},
+							org.jabsorb.ng.client;version=${pkg-version},
+							org.jabsorb.ng.localarg;version=${pkg-version},
+							org.jabsorb.ng.logging;version=${pkg-version},
+							org.jabsorb.ng.reflect;version=${pkg-version},
+							org.jabsorb.ng.serializer;version=${pkg-version},
 							org.json
 						</Export-Package>
 
