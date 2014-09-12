@@ -27,7 +27,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -44,22 +43,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * [START HERE] A factory to create proxies for access to remote Jabsorb
- * services.
- * 
- * TODO: enhance code readability
- * 
- * TODO: add a logger
+ * A factory to create proxies for access to remote Jabsorb services.
  */
 public class Client implements InvocationHandler {
 
-    /**
-     * The logger for this class
-     */
+    /** The logger for this class */
     private static final ILogger log = LoggerFactory.getLogger(Client.class);
-
-    /** The class loader to use */
-    private ClassLoader pClassLoader;
 
     /** Maintain a unique id for each message */
     private final AtomicInteger pId = new AtomicInteger();
@@ -74,36 +63,16 @@ public class Client implements InvocationHandler {
     private ISession pSession;
 
     /**
-     * Create a client given a pSession
-     * 
+     * Create a client given a session
+     *
      * @param aSession
      *            -- transport pSession to use for this connection
      */
     public Client(final ISession aSession) {
 
-        this(aSession, null);
-    }
-
-    /**
-     * Create a client given a session
-     * 
-     * @param aSession
-     *            -- transport pSession to use for this connection
-     * @param aClassLoader
-     *            -- Serializer class loader
-     */
-    public Client(final ISession aSession, final ClassLoader aClassLoader) {
-
         try {
-            if (aClassLoader == null) {
-                pClassLoader = getClass().getClassLoader();
-
-            } else {
-                pClassLoader = aClassLoader;
-            }
-
             pSession = aSession;
-            pSerializer = new JSONSerializer(pClassLoader);
+            pSerializer = new JSONSerializer();
             pSerializer.registerDefaultSerializers();
 
         } catch (final Exception e) {
@@ -113,7 +82,7 @@ public class Client implements InvocationHandler {
 
     /**
      * Dispose of the proxy that is no longer needed
-     * 
+     *
      * @param proxy
      */
     public void closeProxy(final Object proxy) {
@@ -123,7 +92,7 @@ public class Client implements InvocationHandler {
 
     /**
      * Tries to get the requested constructor for the given class
-     * 
+     *
      * @param aClass
      *            A class
      * @param aParameters
@@ -150,7 +119,7 @@ public class Client implements InvocationHandler {
 
     /**
      * Retrieves the next message ID
-     * 
+     *
      * @return the next message ID
      */
     private int getId() {
@@ -160,7 +129,7 @@ public class Client implements InvocationHandler {
 
     /**
      * Allow access to the serializer
-     * 
+     *
      * @return The serializer for this class
      */
     public JSONSerializer getSerializer() {
@@ -170,7 +139,7 @@ public class Client implements InvocationHandler {
 
     /**
      * This method is public because of the inheritance from the
-     * InvokationHandler -- should never be called directly.
+     * InvokationHandler -- <b>should never be called directly.</b>
      */
     @Override
     public Object invoke(final Object proxyObj, final Method method,
@@ -189,6 +158,23 @@ public class Client implements InvocationHandler {
                 method.getReturnType());
     }
 
+    /**
+     * Invokes a method for the client.
+     *
+     * @param objectTag
+     *            (optional) the name of the object to invoke the method on. May
+     *            be null.
+     * @param methodName
+     *            The name of the method to call.
+     * @param args
+     *            The arguments to the method.
+     * @param returnType
+     *            What should be returned
+     * @return The result of the call.
+     * @throws Exception
+     *             JSONObject, UnmarshallExceptions or Exceptions from invoking
+     *             the method may be thrown.
+     */
     private Object invoke(final String objectTag, final String methodName,
             final Object[] args, final Class<?> returnType) throws Throwable {
 
@@ -198,30 +184,25 @@ public class Client implements InvocationHandler {
         methodTag += methodName;
         message.put("method", methodTag);
 
-        {
+        if (args != null) {
             final SerializerState state = new SerializerState();
+            final JSONArray params = (JSONArray) pSerializer.marshall(state,
+                    null /* parent */, args, "params");
 
-            if (args != null) {
-
-                final JSONArray params = (JSONArray) pSerializer.marshall(
-                        state, /* parent */
-                        null, args, "params");
-
-                if ((state.getFixUps() != null)
-                        && (state.getFixUps().size() > 0)) {
-                    final JSONArray fixups = new JSONArray();
-                    for (final Iterator<FixUp> i = state.getFixUps().iterator(); i
-                            .hasNext();) {
-                        final FixUp fixup = i.next();
-                        fixups.put(fixup.toJSONArray());
-                    }
-                    message.put("fixups", fixups);
+            if ((state.getFixUps() != null) && (state.getFixUps().size() > 0)) {
+                final JSONArray fixups = new JSONArray();
+                for (final Iterator<FixUp> i = state.getFixUps().iterator(); i
+                        .hasNext();) {
+                    final FixUp fixup = i.next();
+                    fixups.put(fixup.toJSONArray());
                 }
-                message.put("params", params);
-            } else {
-                message.put("params", new JSONArray());
+                message.put("fixups", fixups);
             }
+            message.put("params", params);
+        } else {
+            message.put("params", new JSONArray());
         }
+
         message.put("id", id);
 
         final JSONObject responseMessage = pSession.sendAndReceive(message);
@@ -230,13 +211,11 @@ public class Client implements InvocationHandler {
             processException(responseMessage);
         }
         final Object rawResult = responseMessage.get("result");
-        if (rawResult == null) {
-            processException(responseMessage);
-        }
         if (returnType.equals(Void.TYPE)) {
             return null;
+        } else if (rawResult == null) {
+            processException(responseMessage);
         }
-
         {
             final JSONArray fixups = responseMessage.optJSONArray("fixups");
 
@@ -255,7 +234,7 @@ public class Client implements InvocationHandler {
 
     /**
      * Tries to make a Throwable object from the given class name and message
-     * 
+     *
      * @param aJavaClass
      *            A Throwable class name
      * @param aMessage
@@ -268,8 +247,8 @@ public class Client implements InvocationHandler {
         try {
             // Try to find the class
             @SuppressWarnings("unchecked")
-            final Class<? extends Throwable> clazz = (Class<? extends Throwable>) pClassLoader
-                    .loadClass(aJavaClass);
+            final Class<? extends Throwable> clazz = (Class<? extends Throwable>) Class
+                    .forName(aJavaClass);
             if (!Throwable.class.isAssignableFrom(clazz)) {
                 // Not an exception class
                 return null;
@@ -316,7 +295,7 @@ public class Client implements InvocationHandler {
 
     /**
      * Create a proxy for communicating with the remote service.
-     * 
+     *
      * @param aKey
      *            the remote object key
      * @param aClass
@@ -334,7 +313,7 @@ public class Client implements InvocationHandler {
 
     /**
      * Generate and throw exception based on the data in the 'responseMessage'
-     * 
+     *
      * @throws Throwable
      *             Throws the correct exception object, or an
      *             {@link ErrorResponse}.
@@ -383,9 +362,8 @@ public class Client implements InvocationHandler {
             throw throwable;
 
         } else {
-            throw new ErrorResponse(new Integer(JSONRPCResult.CODE_ERR_PARSE),
-                    MessageFormat.format("Unknown response: {0}",
-                            responseMessage.toString(2)), null);
+            throw new ErrorResponse(JSONRPCResult.CODE_ERR_PARSE,
+                    "Unknown response: " + responseMessage.toString(2), null);
         }
     }
 }
