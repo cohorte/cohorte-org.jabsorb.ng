@@ -31,13 +31,18 @@ public class ClientError extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public ClientError(final String message) {
+    public ClientError(final String aMessage) {
 
-        super(message);
+        super(aMessage);
     }
 
-    public ClientError(final Throwable ex) {
+    public ClientError(final String aMessage, final Throwable aThrowable) {
 
-        super(ex);
+        super(aMessage, aThrowable);
+    }
+
+    public ClientError(final Throwable aThrowable) {
+
+        super(aThrowable);
     }
 }
