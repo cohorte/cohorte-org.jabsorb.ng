@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.jabsorb.ng.osgi;
 
@@ -11,7 +11,7 @@ import org.osgi.service.log.LogService;
 
 /**
  * A Jabsorb logger based on the OSGi log service
- * 
+ *
  * @author Thomas Calmant
  */
 public class LoggerOSGi implements ILogger {
@@ -19,12 +19,15 @@ public class LoggerOSGi implements ILogger {
     /** The name of the logging class */
     private final String pClassName;
 
+    /** Debug logs flag */
+    private boolean pDebugEnabled;
+
     /** The OSGi log service */
     private LogService pLogger;
 
     /**
      * Sets up the logger
-     * 
+     *
      * @param aLogger
      *            an OSGi log service
      * @param aClassName
@@ -34,23 +37,26 @@ public class LoggerOSGi implements ILogger {
 
         pClassName = aClassName;
         pLogger = null;
+        pDebugEnabled = false;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jabsorb.ng.logging.ILogger#debug(java.lang.String,
      * java.lang.String)
      */
     @Override
     public void debug(final String aMethod, final String aMessage) {
 
-        log(LogService.LOG_DEBUG, aMethod, aMessage);
+        if (isDebugEnabled()) {
+            log(LogService.LOG_DEBUG, aMethod, aMessage);
+        }
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jabsorb.ng.logging.ILogger#error(java.lang.String,
      * java.lang.String)
      */
@@ -62,7 +68,7 @@ public class LoggerOSGi implements ILogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jabsorb.ng.logging.ILogger#error(java.lang.String,
      * java.lang.String, java.lang.Throwable)
      */
@@ -75,7 +81,7 @@ public class LoggerOSGi implements ILogger {
 
     /**
      * Formats a message string containing the name of the logging method
-     * 
+     *
      * @param aMethod
      *            A method name
      * @param aMessage
@@ -89,7 +95,7 @@ public class LoggerOSGi implements ILogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jabsorb.ng.logging.ILogger#getName()
      */
     @Override
@@ -100,7 +106,7 @@ public class LoggerOSGi implements ILogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jabsorb.ng.logging.ILogger#info(java.lang.String,
      * java.lang.String)
      */
@@ -112,20 +118,19 @@ public class LoggerOSGi implements ILogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jabsorb.ng.logging.ILogger#isDebugEnabled()
      */
     @Override
     public boolean isDebugEnabled() {
 
-        // Let the service choose what to do
-        return true;
+        return pDebugEnabled;
     }
 
     /**
      * Logs the given message. Uses the OSGi log service if possible, else uses
      * the Java logging API.
-     * 
+     *
      * @param aLevel
      *            Log level
      * @param aMethod
@@ -142,7 +147,7 @@ public class LoggerOSGi implements ILogger {
     /**
      * Logs the given message. Uses the OSGi log service if possible, else uses
      * the Java logging API.
-     * 
+     *
      * @param aLevel
      *            Log level
      * @param aMethod
@@ -167,8 +172,19 @@ public class LoggerOSGi implements ILogger {
     }
 
     /**
+     * Sets the debug flag
+     *
+     * @param aDebugEnabled
+     *            If True, log debug traces
+     */
+    void setDebugEnabled(final boolean aDebugEnabled) {
+
+        pDebugEnabled = aDebugEnabled;
+    }
+
+    /**
      * Sets the log service to use
-     * 
+     *
      * @param aLogger
      *            the log service
      */
@@ -179,7 +195,7 @@ public class LoggerOSGi implements ILogger {
 
     /**
      * Converts an OSGi log level to its Java logging equivalent
-     * 
+     *
      * @param aLevel
      *            An OSGi log service level
      * @return A Java API logging level
@@ -206,7 +222,7 @@ public class LoggerOSGi implements ILogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jabsorb.ng.logging.ILogger#warning(java.lang.String,
      * java.lang.String)
      */
@@ -218,7 +234,7 @@ public class LoggerOSGi implements ILogger {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jabsorb.ng.logging.ILogger#warning(java.lang.String,
      * java.lang.String, java.lang.Throwable)
      */

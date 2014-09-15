@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.jabsorb.ng.osgi;
 
@@ -15,7 +15,7 @@ import org.osgi.service.log.LogService;
 
 /**
  * Jabsorb bundle activator: activates the log service when possible
- * 
+ *
  * @author Thomas Calmant
  */
 public class Activator implements BundleActivator, ServiceListener {
@@ -32,7 +32,7 @@ public class Activator implements BundleActivator, ServiceListener {
     /**
      * Looks for a log service in the framework. This must not be called if a
      * log service is already bound
-     * 
+     *
      * @return the log service
      */
     private LogService getService() {
@@ -47,7 +47,7 @@ public class Activator implements BundleActivator, ServiceListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.osgi.framework.ServiceListener#serviceChanged(org.osgi.framework.
      * ServiceEvent)
@@ -84,7 +84,7 @@ public class Activator implements BundleActivator, ServiceListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
      * )
@@ -96,7 +96,7 @@ public class Activator implements BundleActivator, ServiceListener {
         pContext = aContext;
 
         // Set the log provider
-        pProvider = new LoggerOSGiProvider();
+        pProvider = new LoggerOSGiProvider(pContext);
         LoggerFactory.setLoggerProvider(pProvider);
 
         // Look for the log service
@@ -107,7 +107,7 @@ public class Activator implements BundleActivator, ServiceListener {
             aContext.addServiceListener(this, "(" + Constants.OBJECTCLASS + "="
                     + LogService.class.getName() + ")");
 
-        } catch (InvalidSyntaxException ex) {
+        } catch (final InvalidSyntaxException ex) {
             // Won't happen... but who knows
             pProvider.getLogger(getClass()).error("start",
                     "Error creating the log service listener", ex);
@@ -119,7 +119,7 @@ public class Activator implements BundleActivator, ServiceListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
