@@ -26,7 +26,6 @@
 
 package org.jabsorb.ng.serializer.impl;
 
-import java.util.AbstractSet;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -45,10 +44,10 @@ import org.json.JSONObject;
 
 /**
  * Serializes Sets
- * 
+ *
  * PATCH by T. Calmant: set contains an array instead of a key -&gt; value
  * object
- * 
+ *
  * TODO: if this serializes a superclass does it need to also specify the
  * subclasses?
  */
@@ -57,7 +56,8 @@ public class SetSerializer extends AbstractSerializer {
     /**
      * Classes that this can serialize to.
      */
-    private static final Class<?>[] _JSONClasses = new Class<?>[] { JSONObject.class };
+    private static final Class<?>[] _JSONClasses = new Class<?>[] {
+            JSONObject.class, JSONArray.class };
 
     /**
      * Classes that this can serialize.
@@ -145,30 +145,38 @@ public class SetSerializer extends AbstractSerializer {
     public ObjectMatch tryUnmarshall(final SerializerState state,
             final Class<?> clazz, final Object o) throws UnmarshallException {
 
-        final JSONObject jso = (JSONObject) o;
-        String java_class;
-
-        // Hint presence
-        try {
-            java_class = jso.getString("javaClass");
-        } catch (final JSONException e) {
-            throw new UnmarshallException("Could not read javaClass", e);
-        }
-        if (java_class == null) {
-            throw new UnmarshallException("no type hint");
-        }
-
-        // Class compatibility check
-        if (!classNameCheck(java_class)) {
-            throw new UnmarshallException("not a Set");
-        }
-
-        // JSON Format check
         JSONArray jsonset;
-        try {
-            jsonset = jso.getJSONArray("set");
-        } catch (final JSONException e) {
-            throw new UnmarshallException("set missing", e);
+        if (o instanceof JSONArray) {
+            jsonset = (JSONArray) o;
+
+        } else if (o instanceof JSONObject) {
+            final JSONObject jso = (JSONObject) o;
+            String java_class;
+
+            // Hint presence
+            try {
+                java_class = jso.getString("javaClass");
+            } catch (final JSONException e) {
+                throw new UnmarshallException("Could not read javaClass", e);
+            }
+            if (java_class == null) {
+                throw new UnmarshallException("no type hint");
+            }
+
+            // Class compatibility check
+            if (!classNameCheck(java_class)) {
+                throw new UnmarshallException("not a Set");
+            }
+
+            // JSON Format check
+            try {
+                jsonset = jso.getJSONArray("set");
+            } catch (final JSONException e) {
+                throw new UnmarshallException("set missing", e);
+            }
+        } else {
+            throw new UnmarshallException(
+                    "Given object is not JSON object/array");
         }
 
         if (jsonset == null) {
@@ -200,41 +208,50 @@ public class SetSerializer extends AbstractSerializer {
     public Object unmarshall(final SerializerState state, final Class<?> clazz,
             final Object o) throws UnmarshallException {
 
-        final JSONObject jso = (JSONObject) o;
-        String java_class;
-
-        // Hint check
-        try {
-            java_class = jso.getString("javaClass");
-        } catch (final JSONException e) {
-            throw new UnmarshallException("Could not read javaClass", e);
-        }
-
-        if (java_class == null) {
-            throw new UnmarshallException("no type hint");
-        }
-
-        // Create the set
-        final AbstractSet<Object> abset;
-        if (java_class.equals("java.util.Set")
-                || java_class.equals("java.util.AbstractSet")
-                || java_class.equals("java.util.HashSet")) {
-            abset = new HashSet<Object>();
-        } else if (java_class.equals("java.util.TreeSet")) {
-            abset = new TreeSet<Object>();
-        } else if (java_class.equals("java.util.LinkedHashSet")) {
+        final JSONArray jsonset;
+        final Set<Object> abset;
+        if (o instanceof JSONArray) {
+            jsonset = (JSONArray) o;
             abset = new LinkedHashSet<Object>();
+
+        } else if (o instanceof JSONObject) {
+            final JSONObject jso = (JSONObject) o;
+            String java_class;
+
+            // Hint check
+            try {
+                java_class = jso.getString("javaClass");
+            } catch (final JSONException e) {
+                throw new UnmarshallException("Could not read javaClass", e);
+            }
+
+            if (java_class == null) {
+                throw new UnmarshallException("no type hint");
+            }
+
+            // Create the set
+            if (java_class.equals("java.util.Set")
+                    || java_class.equals("java.util.AbstractSet")
+                    || java_class.equals("java.util.HashSet")) {
+                abset = new HashSet<Object>();
+            } else if (java_class.equals("java.util.TreeSet")) {
+                abset = new TreeSet<Object>();
+            } else if (java_class.equals("java.util.LinkedHashSet")) {
+                abset = new LinkedHashSet<Object>();
+            } else {
+                throw new UnmarshallException("not a Set");
+            }
+
+            // Parse the JSON set
+            try {
+                jsonset = jso.getJSONArray("set");
+
+            } catch (final JSONException e) {
+                throw new UnmarshallException("set missing", e);
+            }
         } else {
-            throw new UnmarshallException("not a Set");
-        }
-
-        // Parse the JSON set
-        JSONArray jsonset;
-        try {
-            jsonset = jso.getJSONArray("set");
-
-        } catch (final JSONException e) {
-            throw new UnmarshallException("set missing", e);
+            throw new UnmarshallException(
+                    "Given object is not JSON object/array");
         }
 
         if (jsonset == null) {
