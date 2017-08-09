@@ -1,4 +1,3 @@
-# Output folders
 bin/
 target/
-
+.settings/

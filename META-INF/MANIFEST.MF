@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Bnd-LastModified: 1485784368739
+Build-Jdk: 1.8.0_20
+Built-By: bdebbabi
+Bundle-Activator: org.jabsorb.ng.osgi.Activator
+Bundle-ManifestVersion: 2
+Bundle-Name: COHORTE :: org.jabsorb.ng
+Bundle-SymbolicName: org.jabsorb.ng
+Bundle-Vendor: COHORTE Technologies
+Bundle-Version: 1.1.0
+Created-By: Apache Maven Bundle Plugin
+DynamicImport-Package: *
+Export-Package: org.jabsorb.ng;
+  uses:="org.jabsorb.ng.serializer,
+   javax.servlet,
+   org.json,
+   javax.servlet.http,
+   org.jabsorb.ng.callback,
+   org.jabsorb.ng.localarg",
+ org.jabsorb.ng.callback,
+ org.jabsorb.ng.client;uses:="org.jabsorb.ng,org.json",
+ org.jabsorb.ng.localarg,
+ org.jabsorb.ng.logging,
+ org.jabsorb.ng.reflect,
+ org.jabsorb.ng.serializer;uses:="org.jabsorb.ng,org.json,org.jabsorb.ng.callback",
+ org.json
+Import-Package: javax.servlet,
+ javax.servlet.http,
+ org.osgi.framework,
+ org.osgi.service.log
+Tool: Bnd-2.1.0.20130426-122213
