@@ -152,8 +152,8 @@
 	
 	<repositories>
 		<repository>
-        	<id>indigo</id>
-        	<url>http://download.eclipse.org/releases/indigo</url>
+        	<id>felix-p2</id>
+        	<url>http://nrm.cohorte.tech/repository/felix-p2/5.4.0</url>
         	<layout>p2</layout>
         	<!-- Used to retrieve javax.servlet.* packages -->
         </repository>		
